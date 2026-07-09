@@ -155,13 +155,7 @@ h1{
                max="100"
                style="width:70px;">
     </label>
-<label>
-    Arrotonda per
-    <select id="tipoArrotondamento">
-        <option value="eccesso" selected>Eccesso</option>
-        <option value="difetto">Difetto</option>
-    </select>
-</label>
+
 </div>
 
 <div class="stats">
@@ -359,17 +353,27 @@ function draw(){
             ).value
         );
 
-    let min =
-        Math.ceil(
-            eff * (targetPresenza / 100)
-        );
+    let valoreCalcolato =
+    eff * (targetPresenza / 100);
 
-    let manc =
-        Math.max(
-            0,
-            min - presenza
-        );
+let tipoArrotondamento =
+    document.getElementById(
+        'tipoArrotondamento'
+    ).value;
 
+let min;
+
+if(tipoArrotondamento === 'eccesso'){
+    min = Math.ceil(valoreCalcolato);
+}else{
+    min = Math.floor(valoreCalcolato);
+}
+
+let manc =
+    Math.max(
+        0,
+        min - presenza
+    );
     document.getElementById('lav').textContent = lavorativi;
     document.getElementById('ferie').textContent = ferie;
     document.getElementById('pres').textContent = presenza;
