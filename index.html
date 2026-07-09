@@ -361,13 +361,10 @@ let tipoArrotondamento =
         'tipoArrotondamento'
     ).value;
 
-let min;
-
-if(tipoArrotondamento === 'eccesso'){
-    min = Math.ceil(valoreCalcolato);
-}else{
-    min = Math.floor(valoreCalcolato);
-}
+let min =
+    Math.ceil(
+        eff * (targetPresenza / 100)
+    );
 
 let manc =
     Math.max(
