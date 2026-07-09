@@ -387,15 +387,34 @@ function draw(){
     let stato =
         document.getElementById('stato');
 
-    stato.textContent =
-        manc===0
-        ? '✅ IN REGOLA'
-        : '❌ NON IN REGOLA';
+let percentualeRaggiunta =
+    min > 0
+    ? (presenza / min) * 100
+    : 100;
 
-    stato.className =
-        manc===0
-        ? 'ok'
-        : 'ko';
+if(manc === 0){
+
+    stato.textContent =
+        '✅ IN REGOLA';
+
+    stato.className = 'ok';
+
+}
+else if(percentualeRaggiunta >= 80){
+
+    stato.textContent =
+        `🟠 SEI QUASI IN REGOLA (${percentualeRaggiunta.toFixed(0)}%)`;
+
+    stato.className = 'quasi';
+
+}
+else{
+
+    stato.textContent =
+        '❌ NON IN REGOLA';
+
+    stato.className = 'ko';
+
 }
 
 month.onchange=draw;
