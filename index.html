@@ -92,7 +92,6 @@ h1{
     color:orange;
     font-weight:bold;
 }
-``
 .legend{
     display:flex;
     gap:25px;
@@ -392,34 +391,6 @@ function draw(){
         document.getElementById('stato');
 
 let percentualeRaggiunta =
-    min > 0
-    ? (presenza / min) * 100
-    : 100;
-
-if(manc === 0){
-
-    stato.textContent =
-        '✅ IN REGOLA';
-
-    stato.className = 'ok';
-
-}
-else if(percentualeRaggiunta >= 80){
-
-    stato.textContent =
-        `🟠 SEI QUASI IN REGOLA (${percentualeRaggiunta.toFixed(0)}%)`;
-
-    stato.className = 'quasi';
-
-}
-else{
-
-    stato.textContent =
-        '❌ NON IN REGOLA';
-
-    stato.className = 'ko';
-
-}
 
 month.onchange=draw;
 year.onchange=draw;
