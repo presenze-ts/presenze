@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <linkest.json2<meta name="theme-color" content="#57bb8a">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calendario Presenze</title>
-manifest.json
- <meta name="theme-color" content="#57bb8a">   
+
 <style>
 body{
     font-family:Arial,sans-serif;
@@ -23,6 +21,8 @@ h1{
     display:flex;
     gap:10px;
     margin-bottom:15px;
+    flex-wrap:wrap;
+    align-items:center;
 }
 
 .stats{
@@ -89,8 +89,6 @@ h1{
     font-weight:bold;
 }
 
-/* LEGENDA */
-
 .legend{
     display:flex;
     gap:25px;
@@ -126,7 +124,6 @@ h1{
     background:#ffffff;
 }
 </style>
-
 </head>
 
 <body>
@@ -134,9 +131,12 @@ h1{
 <h1>Calendario Presenze</h1>
 
 <div class="top">
+
     <select id="month"></select>
+
     <input id="year" type="number" value="2026">
- <label>
+
+    <label>
         % Presenza
         <input id="percTargetPresenza"
                type="number"
@@ -156,7 +156,6 @@ h1{
                style="width:70px;">
     </label>
 
- 
 </div>
 
 <div class="stats">
@@ -186,15 +185,23 @@ h1{
     </div>
 
     <div class="card">
-        Minimo richiesto (40%): <span id="minimo">0</span>
+        Presenze minime richieste:
+        <span id="minimo">0</span>
     </div>
 
     <div class="card">
-        Presenze mancanti: <span id="mancanti">0</span>
+        Target Presenza:
+        <span id="targetMostrato">40%</span>
     </div>
 
     <div class="card">
-        Stato: <span id="stato">-</span>
+        Presenze mancanti:
+        <span id="mancanti">0</span>
+    </div>
+
+    <div class="card">
+        Stato:
+        <span id="stato">-</span>
     </div>
 
 </div>
@@ -339,9 +346,23 @@ function draw(){
     let percP=eff ? ((presenza/eff)*100) : 0;
     let percSW=eff ? ((smartWorking/eff)*100) : 0;
 
-    let min=Math.ceil(eff*0.4);
+    let targetPresenza =
+        Number(
+            document.getElementById(
+                'percTargetPresenza'
+            ).value
+        );
 
-    let manc=Math.max(0,min-presenza);
+    let min =
+        Math.ceil(
+            eff * (targetPresenza / 100)
+        );
+
+    let manc =
+        Math.max(
+            0,
+            min - presenza
+        );
 
     document.getElementById('lav').textContent = lavorativi;
     document.getElementById('ferie').textContent = ferie;
@@ -356,6 +377,9 @@ function draw(){
 
     document.getElementById('minimo').textContent =
         min;
+
+    document.getElementById('targetMostrato').textContent =
+        targetPresenza + '%';
 
     document.getElementById('mancanti').textContent =
         manc;
@@ -376,6 +400,22 @@ function draw(){
 
 month.onchange=draw;
 year.onchange=draw;
+
+percTargetPresenza.onchange=function(){
+
+    percTargetSmart.value =
+        100 - Number(this.value);
+
+    draw();
+};
+
+percTargetSmart.onchange=function(){
+
+    percTargetPresenza.value =
+        100 - Number(this.value);
+
+    draw();
+};
 
 draw();
 
