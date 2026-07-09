@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <linkest.json2<meta name="theme-color" content="#57bb8a">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calendario Presenze</title>
-manifest.json
- <meta name="theme-color" content="#57bb8a">   
+
 <style>
 body{
     font-family:Arial,sans-serif;
@@ -22,14 +20,16 @@ h1{
 .top{
     display:flex;
     gap:10px;
-    margin-bottom:15px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+    align-items:center;
 }
 
 .stats{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
     gap:10px;
-    margin-bottom:15px;
+    margin-bottom:20px;
 }
 
 .card{
@@ -52,6 +52,7 @@ h1{
 
 .h{
     font-weight:bold;
+    background:#f5f5f5;
 }
 
 .d{
@@ -84,12 +85,10 @@ h1{
     font-weight:bold;
 }
 
-.ko{
-    color:red;
+.quasi{
+    color:orange;
     font-weight:bold;
 }
-
-/* LEGENDA */
 
 .legend{
     display:flex;
@@ -111,7 +110,6 @@ h1{
     width:20px;
     height:20px;
     border:1px solid #999;
-    display:inline-block;
 }
 
 .legend-presence{
@@ -126,7 +124,6 @@ h1{
     background:#ffffff;
 }
 </style>
-
 </head>
 
 <body>
@@ -134,68 +131,76 @@ h1{
 <h1>Calendario Presenze</h1>
 
 <div class="top">
-    <select id="month"></select>
-    <input id="year" type="number" value="2026">
- <label>
-        % Presenza
-        <input id="percTargetPresenza"
-               type="number"
-               value="40"
-               min="0"
-               max="100"
-               style="width:70px;">
-    </label>
 
-    <label>
-        % Smart
-        <input id="percTargetSmart"
-               type="number"
-               value="60"
-               min="0"
-               max="100"
-               style="width:70px;">
-    </label>
+<select id="month"></select>
 
- 
+<input id="year" type="number" value="2026">
+
+<label>
+% Presenza
+<input id="percTargetPresenza"
+type="number"
+min="0"
+max="100"
+style="width:70px;">
+</label>
+
+<label>
+% Smart
+<input id="percTargetSmart"
+type="number"
+min="0"
+max="100"
+style="width:70px;">
+</label>
+
 </div>
 
 <div class="stats">
 
-    <div class="card">
-        Lavorativi: <span id="lav">0</span>
-    </div>
+<div class="card">
+Lavorativi: <span id="lav">0</span>
+</div>
 
-    <div class="card">
-        Ferie / Sede Chiusa: <span id="ferie">0</span>
-    </div>
+<div class="card">
+Ferie / Sede Chiusa: <span id="ferie">0</span>
+</div>
 
-    <div class="card">
-        Presenza: <span id="pres">0</span>
-    </div>
+<div class="card">
+Presenza: <span id="pres">0</span>
+</div>
 
-    <div class="card">
-        Smart Working: <span id="sw">0</span>
-    </div>
+<div class="card">
+Smart Working: <span id="sw">0</span>
+</div>
 
-    <div class="card">
-        % Presenza: <span id="percPres">0%</span>
-    </div>
+<div class="card">
+% Presenza: <span id="percPres">0%</span>
+</div>
 
-    <div class="card">
-        % Smart Working: <span id="percSW">0%</span>
-    </div>
+<div class="card">
+% Smart Working: <span id="percSW">0%</span>
+</div>
 
-    <div class="card">
-        Minimo richiesto (40%): <span id="minimo">0</span>
-    </div>
+<div class="card">
+Presenze minime richieste:
+<span id="minimo">0</span>
+</div>
 
-    <div class="card">
-        Presenze mancanti: <span id="mancanti">0</span>
-    </div>
+<div class="card">
+Target Presenza:
+<span id="targetMostrato">40%</span>
+</div>
 
-    <div class="card">
-        Stato: <span id="stato">-</span>
-    </div>
+<div class="card">
+Presenze mancanti:
+<span id="mancanti">0</span>
+</div>
+
+<div class="card">
+Stato:
+<span id="stato">-</span>
+</div>
 
 </div>
 
@@ -203,29 +208,33 @@ h1{
 
 <div class="legend">
 
-    <div class="legend-item">
-        <span class="legend-box legend-presence"></span>
-        Presenza
-    </div>
+<div class="legend-item">
+<div class="legend-box legend-presence"></div>
+Presenza
+</div>
 
-    <div class="legend-item">
-        <span class="legend-box legend-holiday"></span>
-        Ferie / Sede Chiusa
-    </div>
+<div class="legend-item">
+<div class="legend-box legend-holiday"></div>
+Ferie / Sede Chiusa
+</div>
 
-    <div class="legend-item">
-        <span class="legend-box legend-sw"></span>
-        Smart Working
-    </div>
+<div class="legend-item">
+<div class="legend-box legend-sw"></div>
+Smart Working
+</div>
 
 </div>
 
 <p>
 Clic sui giorni lavorativi:
-Bianco → Verde (Presenza) → Giallo (Ferie / Sede Chiusa) → Bianco (Smart Working).
+Bianco → Presenza → Ferie/Sede Chiusa → Bianco
 </p>
 
 <script>
+
+const month = document.getElementById('month');
+const year = document.getElementById('year');
+const cal = document.getElementById('cal');
 
 const mesi = [
 'Gennaio','Febbraio','Marzo','Aprile',
@@ -239,143 +248,222 @@ month.innerHTML = mesi.map((m,i)=>
 
 month.value = new Date().getMonth();
 
+const targetSalvato =
+localStorage.getItem('targetPresenza');
+
+if(targetSalvato){
+
+document.getElementById('percTargetPresenza').value =
+targetSalvato;
+
+document.getElementById('percTargetSmart').value =
+100 - Number(targetSalvato);
+
+}
+else{
+
+document.getElementById('percTargetPresenza').value = 40;
+document.getElementById('percTargetSmart').value = 60;
+
+}
+
 function key(){
-    return 'presenze_'+year.value+'_'+month.value;
+return 'presenze_'+year.value+'_'+month.value;
 }
 
 function load(){
-    return JSON.parse(
-        localStorage.getItem(key()) || '{}'
-    );
+return JSON.parse(
+localStorage.getItem(key()) || '{}'
+);
 }
 
 function save(d){
-    localStorage.setItem(
-        key(),
-        JSON.stringify(d)
-    );
+localStorage.setItem(
+key(),
+JSON.stringify(d)
+);
 }
 
 function draw(){
 
-    let y=+year.value;
-    let m=+month.value;
-    let data=load();
+let y=+year.value;
+let m=+month.value;
 
-    cal.innerHTML='';
+let data=load();
 
-    ['Lun','Mar','Mer','Gio','Ven','Sab','Dom']
-    .forEach(x=>
-        cal.innerHTML += `<div class="h">${x}</div>`
-    );
+cal.innerHTML='';
 
-    let first=new Date(y,m,1);
-    let offset=(first.getDay()+6)%7;
+['Lun','Mar','Mer','Gio','Ven','Sab','Dom']
+.forEach(x=>{
+cal.innerHTML += `<div class="h">${x}</div>`;
+});
 
-    for(let i=0;i<offset;i++){
-        cal.innerHTML += '<div class="empty"></div>';
-    }
+let first=new Date(y,m,1);
+let offset=(first.getDay()+6)%7;
 
-    let giorni=new Date(y,m+1,0).getDate();
+for(let i=0;i<offset;i++){
+cal.innerHTML += '<div class="empty"></div>';
+}
 
-    let lavorativi=0;
-    let presenza=0;
-    let ferie=0;
+let giorni = new Date(y,m+1,0).getDate();
 
-    for(let g=1; g<=giorni; g++){
+let lavorativi=0;
+let presenza=0;
+let ferie=0;
 
-        let dt=new Date(y,m,g);
-        let wd=dt.getDay();
+for(let g=1;g<=giorni;g++){
 
-        let e=document.createElement('div');
+let dt=new Date(y,m,g);
+let wd=dt.getDay();
 
-        e.className='d';
-        e.textContent=g;
+let e=document.createElement('div');
 
-        if(wd===0 || wd===6){
+e.className='d';
+e.textContent=g;
 
-            e.classList.add('weekend');
+if(wd===0 || wd===6){
 
-        }else{
+e.classList.add('weekend');
 
-            lavorativi++;
+}else{
 
-            let stato=data[g] || 'sw';
+lavorativi++;
 
-            if(stato==='presence'){
-                presenza++;
-            }
+let stato=data[g] || 'sw';
 
-            if(stato==='holiday'){
-                ferie++;
-            }
+if(stato==='presence') presenza++;
+if(stato==='holiday') ferie++;
 
-            e.classList.add(stato);
+e.classList.add(stato);
 
-            e.onclick=()=>{
+e.onclick=()=>{
 
-                let n=data[g] || 'sw';
+let n=data[g] || 'sw';
 
-                n = n==='sw'
-                    ? 'presence'
-                    : n==='presence'
-                    ? 'holiday'
-                    : 'sw';
+n =
+n==='sw'
+?'presence'
+:n==='presence'
+?'holiday'
+:'sw';
 
-                data[g]=n;
+data[g]=n;
 
-                save(data);
+save(data);
 
-                draw();
-            };
-        }
+draw();
 
-        cal.appendChild(e);
-    }
+};
 
-    let eff=lavorativi-ferie;
-    let smartWorking=eff-presenza;
+}
 
-    let percP=eff ? ((presenza/eff)*100) : 0;
-    let percSW=eff ? ((smartWorking/eff)*100) : 0;
+cal.appendChild(e);
 
-    let min=Math.ceil(eff*0.4);
+}
 
-    let manc=Math.max(0,min-presenza);
+let eff=lavorativi-ferie;
 
-    document.getElementById('lav').textContent = lavorativi;
-    document.getElementById('ferie').textContent = ferie;
-    document.getElementById('pres').textContent = presenza;
-    document.getElementById('sw').textContent = smartWorking;
+let smartWorking=eff-presenza;
 
-    document.getElementById('percPres').textContent =
-        percP.toFixed(2)+'%';
+let percP=eff
+? (presenza/eff)*100
+: 0;
 
-    document.getElementById('percSW').textContent =
-        percSW.toFixed(2)+'%';
+let percSW=eff
+? (smartWorking/eff)*100
+: 0;
 
-    document.getElementById('minimo').textContent =
-        min;
+let targetPresenza =
+Number(
+document.getElementById('percTargetPresenza').value
+);
 
-    document.getElementById('mancanti').textContent =
-        manc;
+let min =
+Math.ceil(
+eff * (targetPresenza/100)
+);
 
-    let stato =
-        document.getElementById('stato');
+let manc =
+Math.max(
+0,
+min-presenza
+);
 
-    stato.textContent =
-        manc===0
-        ? '✅ IN REGOLA'
-        : '❌ NON IN REGOLA';
+document.getElementById('lav').textContent=lavorativi;
+document.getElementById('ferie').textContent=ferie;
+document.getElementById('pres').textContent=presenza;
+document.getElementById('sw').textContent=smartWorking;
 
-    stato.className =
-        manc===0
-        ? 'ok'
-        : 'ko';
+document.getElementById('percPres').textContent=
+percP.toFixed(2)+'%';
+
+document.getElementById('percSW').textContent=
+percSW.toFixed(2)+'%';
+
+document.getElementById('minimo').textContent=min;
+
+document.getElementById('targetMostrato').textContent=
+targetPresenza+'%';
+
+document.getElementById('mancanti').textContent=manc;
+
+let stato=document.getElementById('stato');
+
+if(percP >= targetPresenza){
+
+stato.textContent='✅ IN REGOLA';
+stato.className='ok';
+
+}
+else if(percP >= 36 && percP < 40){
+
+stato.textContent=
+`🟠 QUASI IN REGOLA (${percP.toFixed(2)}%)`;
+
+stato.className='quasi';
+
+}
+else{
+
+stato.textContent=
+`${percP.toFixed(2)}%`;
+
+stato.className='';
+
+}
+
 }
 
 month.onchange=draw;
 year.onchange=draw;
+
+percTargetPresenza.onchange=function(){
+
+percTargetSmart.value=
+100-Number(this.value);
+
+localStorage.setItem(
+'targetPresenza',
+this.value
+);
+
+draw();
+
+};
+
+percTargetSmart.onchange=function(){
+
+percTargetPresenza.value=
+100-Number(this.value);
+
+localStorage.setItem(
+'targetPresenza',
+percTargetPresenza.value
+);
+
+draw();
+
+};
 
 draw();
 
